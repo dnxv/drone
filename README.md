@@ -5,15 +5,27 @@ The value needs to relate to what the yolov5 cv model detects to help
 the pilot find the target.
 
 
+```mermaid
+graph LR
+A[Square Rect] -- Link text --> B((Circle))
+A --> C(Round Rect)
+B --> D{Rhombus}
+C --> D
+```
+
+
 - understand detect.py
   - bounding box
+  - uses for loop
+  - saves images not videos
 - need to combine detect.py, mavlink, dronekit
 - pseudocode
 - calculate FOV
 - test rasp pi, python, libraries, camera, CV, pymavlink
   - libraries: pymavlink, cv2, 
 - might need to record footage to decode drone flight?
-
+- failsafe
+- save GCS logs
 ```
 --- 
 # How to use
