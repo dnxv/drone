@@ -4,16 +4,23 @@ problem: we need to combine yolov5 and pymavlink to send a value to GCS.
 The value needs to relate to what the yolov5 cv model detects to help 
 the pilot find the target.
 
-
-- understand detect.py
-  - bounding box
-- need to combine detect.py, mavlink, dronekit
-- pseudocode
-- calculate FOV
-- test rasp pi, python, libraries, camera, CV, pymavlink
+broken down:
+- setup remote VNC?
+  - https://www.youtube.com/watch?v=7vA5utwzY0E
+- setup yolov5 on camera/rpi
   - libraries: pymavlink, cv2, 
-- might need to record footage to decode drone flight?
-
+  - bash script to install requirements/commands?
+  loop (for testing):
+    - add code to detect.py
+      - bounding box
+      - uses nested for loop
+      - saves images not videos
+    - add failsafe? (ask about just using GCS for waypoint)
+    - obtain focal length -> fov, bounding box
+    - calculate relative yaw/pseudocode
+    - send data via mavlink message
+    - display value on GCS (Qgroundcontrol)
+    - save GCS logs
 ```
 --- 
 # How to use
