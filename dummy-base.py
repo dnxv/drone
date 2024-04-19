@@ -35,6 +35,7 @@ import platform
 import sys
 from pathlib import Path
 
+import pymavlink
 import torch
 
 FILE = Path(__file__).resolve()
@@ -200,6 +201,7 @@ def run(
                     s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
 
                 # Write results
+                #Bounding boxes here???
                 for *xyxy, conf, cls in reversed(det):
                     c = int(cls)  # integer class
                     label = names[c] if hide_conf else f"{names[c]}"
@@ -231,6 +233,11 @@ def run(
                     cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
                 cv2.imshow(str(p), im0)
                 cv2.waitKey(1)  # 1 millisecond
+            
+            #################################################################
+            ## Added this code  ##
+
+            #################################################################
 
             # Save results (image with detections)
             if save_img:

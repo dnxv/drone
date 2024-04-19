@@ -8,7 +8,7 @@ step 2: load model
 step 3: run inference
 step 4: process predictions
 step 5: show results (img feed)
-    - runs in a for loop
+    - runs in a nested for loop
 
 """
 

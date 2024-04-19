@@ -1,3 +1,5 @@
+#credit goes to Jordan
+
 import time
 from pymavlink import mavutil
 import random

@@ -4,29 +4,39 @@ problem: we need to combine yolov5 and pymavlink to send a value to GCS.
 The value needs to relate to what the yolov5 cv model detects to help 
 the pilot find the target.
 
+broken down:
+- saves images not videos
+  - python detect.py --weights yolov5s.pt --source 0  
+    --weights best.pt --conf-thres 65 --max-det 1 --save-txt --save-csv --save-conf --save-crop
 
-```mermaid
-graph LR
-A[Square Rect] -- Link text --> B((Circle))
-A --> C(Round Rect)
-B --> D{Rhombus}
-C --> D
+- setup remote VNC?
+  - (remote, might not work) https://www.youtube.com/watch?v=7vA5utwzY0E (b)
+  - (w/ screen) https://www.youtube.com/watch?v=HEywFsFrj3I (b)
+
+- setup yolov5 on camera/rpi
+  - bash script to install requirements/commands?
+  - test pymavlink barebones with GCS (b)
+  - test barebones detect.py with our model (b)
+    - try to get model from roboflow
+  - obtain focal length -> fov, bounding box (b)
+  - check math on this
+
+
+  loop (for testing):
+    - add code to detect.py
+      - bounding box (search dummy-base: line 203 Bounding boxes here???) (xyxy)
+      - uses nested for loop
+    - add failsafe? (ask about just using GCS for waypoint)
+
+    - obtain focal length -> fov, bounding box
+    - calculate relative yaw/pseudocode
+
+    - send data via mavlink message
+    - display value on GCS (Qgroundcontrol)
+
+    - save GCS logs
 ```
 
-
-- understand detect.py
-  - bounding box
-  - uses for loop
-  - saves images not videos
-- need to combine detect.py, mavlink, dronekit
-- pseudocode
-- calculate FOV
-- test rasp pi, python, libraries, camera, CV, pymavlink
-  - libraries: pymavlink, cv2, 
-- might need to record footage to decode drone flight?
-- failsafe
-- save GCS logs
-```
 --- 
 # How to use
 - mission planner
