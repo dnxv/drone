@@ -35,7 +35,10 @@ import platform
 import sys
 from pathlib import Path
 
-import pymavlink
+import time
+from pymavlink import mavutil
+import random
+import os
 import torch
 
 FILE = Path(__file__).resolve()
@@ -237,6 +240,37 @@ def run(
             #################################################################
             ## Added this code  ##
 
+            #Bryan's pseudocode
+            pixel_height = 4056
+            pixel_width = 3040
+
+            mid_reso = 4056 // 2
+            fov = 30 # degrees
+            fov_left = (fov // 2) * -1
+            fov_right = fov // 2
+            image_coor_x = 0
+
+            yaw_rotate = 0 # most important
+
+            if image_coor_x < mid_reso: #if left
+                yaw_rotate = (image_coor_x/pixel_width) * fov_left
+            elif image_coor_x > mid_reso: #if right
+                yaw_rotate = (image_coor_x/pixel_width) * fov_right            
+            else: #if center
+                print()
+                
+
+            # Send a random float every second
+            #while True: #commented out bc already in nested for loop
+            drone.mav.named_value_float_send(
+                int((time.time() - boot_time) * 1e3),
+                'test_float'.encode(),
+                # random.random()
+                yaw_rotate # < --- send relative yaw
+                )
+
+            # time.sleep(1)
+
             #################################################################
 
             # Save results (image with detections)
@@ -270,6 +304,20 @@ def run(
     if update:
         strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
+# Wait for the connection to be established
+def wait_conn(device):
+    msg = None
+    global boot_time
+
+    while msg is None:
+        device.mav.ping_send(
+            int((time.time() - boot_time) * 1e6),
+            0,
+            0,
+            0
+        )
+        msg = device.recv_match()
+        time.sleep(0.5)
 
 def parse_opt():
     """Parses command-line arguments for YOLOv5 detection, setting inference options and model configurations."""
@@ -308,12 +356,25 @@ def parse_opt():
     return opt
 
 
-def main(opt):
+def main(opt, boot_time, drone):
     """Executes YOLOv5 model inference with given options, checking requirements before running the model."""
     check_requirements(ROOT / "requirements.txt", exclude=("tensorboard", "thop"))
-    run(**vars(opt))
+    run(**vars(opt), boot_time, drone)
 
 
 if __name__ == "__main__":
     opt = parse_opt()
-    main(opt)
+    #################################################################
+    ## Added this code  ##
+    boot_time = time.time()
+
+    # Make the connection use MAVLink 2.0
+    os.environ['MAVLINK20'] = "1"
+
+    # Connect to the vehicle
+    drone = mavutil.mavlink_connection('/dev/ttyAMA0', source_system=1, source_component=10)
+    wait_conn(drone)
+    print('Drone set up done...')
+    #################################################################
+    main(opt, boot_time, drone)
+
