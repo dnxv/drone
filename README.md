@@ -19,6 +19,9 @@ broken down:
   - (w/ screen) https://www.youtube.com/watch?v=HEywFsFrj3I (done)
 
 - need to download missionplanner log files
+  - try this but with qgroundcontrol: https://www.youtube.com/watch?v=cZ0f1TTmSZM
+  - mission planner: https://www.youtube.com/watch?v=oVuFGzFV--Q&t=608s
+  - possible flight log analysis: https://docs.px4.io/main/en/log/flight_log_analysis
 
 - setup yolov5 w/ camera/rpi
   - bash script to install requirements/commands?
@@ -26,9 +29,13 @@ broken down:
     - command: libcamera-hello -t 25000
   - test pymavlink barebones with GCS (b)
     - need microUSB from pi to cube
-    - need to find usb name (e.g. /dev/ttyAMA0)
+    - need to find usb name (e.g. serial port -> /dev/ttyAMA0)
+      - usb port: /dev/ttyACM0
       - command: ls /dev/tty*
       - alternative: udpin:localhost:14551
+      - alternative: cap = cv2.VideoCapture(0)
+      - sysID: qgroundctrl > Q (upper left) > Applications Settings > MAVLink > First field: MAVLink Sys ID 255 or 1?
+        - Telemetry Stream Rates (ArduPilot Only) 2hz, 3 hz, 10 hz
     - need to try qgroundcontrol
 
   - test barebones detect.py with our model (b)
@@ -76,13 +83,12 @@ Note: ((bounding_box_center - (camera_resolution / 2)) / camera_resolution) * ca
 
 ```
 #Basic 
-sudo python3 detect.py --weights 3-27-13-best.pt --source 0
+sudo python3 detect.py --weights best.pt --source 0
 
 #Advanced
 libcamera-vid -n -t 0 --width 1280 --height 960 --framerate 1 --inline --listen -o tcp://127.0.0.1:8888
 
 python3 detect.py --source tcp://127.0.0.1:8888 --view-img --weights best.pt --conf-thres 65 --max-det 1 --save-txt --save-csv --save-conf --save-crop
-
 ```
 
 # Installations (Optional Bash barebones.sh)
@@ -124,15 +130,4 @@ step 3: run inference
 step 4: process predictions
 step 5: show results (img feed)
     - runs in a nested for loop
-
-#template
-def method(arg1, arg2, arg3):
-  """
-  description
-  
-  Returns:
-    None
-  Example:
-    >>> mesg, addr, port, seqRange = 'Howdy', localhost, 12000, 10
-    >>> send(mesg, addr, port, seqRange)
-  """
+```
